@@ -1,0 +1,6 @@
+#this should yield an integer
+90
+#this should yield a float
+90.0
+#this should yield an errr
+9.090.0

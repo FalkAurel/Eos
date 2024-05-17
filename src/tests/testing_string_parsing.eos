@@ -1,0 +1,2 @@
+"Hello this is a string""This is the second string""This will produce an error,
+as the string is not closed
