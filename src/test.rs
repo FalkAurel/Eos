@@ -2,7 +2,8 @@ use testing::*;
 
 pub fn run_tests() {
     runtime_error();
-    compiler_strings();
+    compiler_string_manipulation();
+    compiler_strings_comparison();
     compiler_boolean_expression();
     compiler_boolean();
     compiler_calculating();
@@ -13,12 +14,13 @@ pub fn run_tests() {
     lexer_one_lookahed_token();
     lexer_whitespace_comment();
     vm_binary_operations();
-    //vm_negate();
+    vm_negate();
 }
 
 
 mod testing {
     use std::fs::read_to_string;
+    use crate::data_structures::DynType;
     use crate::token::Token;
     use crate::{lexer::Lexer, token::TokenType};
     use crate::{vm::VM, chunk::{Chunk, print_chunk}, opcode::OpCode, value::Value, compiler::Compiler, common::{DEFAULT_STACK_CAPACITY, SharedData}};
@@ -36,33 +38,46 @@ mod testing {
             chunk.add_opcode(OpCode::Print, 0);
             let mut vm: VM = VM::new(&chunk);
 
-            //print_chunk(&chunk, "Test  String");
-
             let _ = vm.run();
 
-            //assert_eq!(vm.get_stack(), &vec![]);//&vec![Value::Obj(ObjectString::new("Hallo Welt, anscheinend hat das funktioniert!".to_string()))])
         } else {
             assert!(false);
         }
     }
 
-    pub fn compiler_strings(){
-        let code: String = read_to_string("src/tests/testing_compiler_string.eos").unwrap();
+    pub fn compiler_strings_comparison(){
+        let code: String = read_to_string("src/tests/testing_compiler_string_comparision.eos").unwrap();
         let shared_code: SharedData<String> = SharedData::new(&code);
 
         let mut lexer: Lexer = Lexer::new(&code);
-        let mut chunk: Chunk = Chunk::new(DEFAULT_STACK_CAPACITY);
+        let chunk: Chunk = Chunk::new(DEFAULT_STACK_CAPACITY);
         let mut compiler: Compiler = Compiler::new(lexer.lexing(), shared_code, SharedData::new(&chunk));
 
         if compiler.compile().is_some(){
-            chunk.add_opcode(OpCode::Print, 0);
             let mut vm: VM = VM::new(&chunk);
-
-            //print_chunk(&chunk, "Test  String");
 
             let _ = vm.run();
 
-            assert_eq!(vm.get_stack(), &vec![])//&vec![Value::Obj(ObjectString::new("Hallo Welt, anscheinend hat das funktioniert!".to_string()))])
+            assert_eq!(vm.get_stack(), &vec![Value::Boolean(true)])//&vec![Value::Obj(ObjectString::new("Hallo Welt, anscheinend hat das funktioniert!".to_string()))])
+        } else {
+            assert!(false);
+        }
+    }
+
+    pub fn compiler_string_manipulation(){
+        let code: String = read_to_string("src/tests/testing_compiler_string_manipulation.eos").unwrap();
+        let shared_code: SharedData<String> = SharedData::new(&code);
+
+        let mut lexer: Lexer = Lexer::new(&code);
+        let chunk: Chunk = Chunk::new(DEFAULT_STACK_CAPACITY);
+        let mut compiler: Compiler = Compiler::new(lexer.lexing(), shared_code, SharedData::new(&chunk));
+
+        if compiler.compile().is_some(){
+            let mut vm: VM = VM::new(&chunk);
+
+            let _ = vm.run();
+
+            assert_eq!(vm.get_stack(), &vec![Value::Object(DynType::new("String".to_string()))])
         } else {
             assert!(false);
         }
@@ -80,11 +95,8 @@ mod testing {
         if compiler.compile().is_some(){
             let mut vm: VM = VM::new(&chunk);
 
-            print_chunk(&chunk, "Test Boolean Expression");
-
             let _ = vm.run();
 
-            println!("{:?}", vm);
             assert_eq!(vm.get_stack(), vec![Value::Boolean(true)])
         } else {
             assert!(false);
@@ -101,8 +113,6 @@ mod testing {
 
         if compiler.compile().is_some(){
             let mut vm: VM = VM::new(&chunk);
-
-            print_chunk(&chunk, "Test Boolean");
 
             let _ = vm.run();
 
@@ -125,11 +135,8 @@ mod testing {
         if compiler.compile().is_some(){
             let mut vm: VM = VM::new(&chunk);
 
-            print_chunk(&chunk, "Test Binary Operation");
-
             let _ = vm.run();
 
-            println!("{:?}", temp);
             assert_eq!(vm.get_stack(), vec![Value::Integer(8)])
         } else {
             assert!(false);
@@ -213,8 +220,6 @@ mod testing {
         chunk.add_value(Value::Integer(4), 0);
         chunk.add_opcode(OpCode::Multiply, 0);
 
-        print_chunk(&chunk, "VM Binary Operations");
-
         let mut vm: VM = VM::new(&chunk);
         vm.run().unwrap();
 
@@ -222,7 +227,7 @@ mod testing {
     }
 
     pub fn vm_negate(){
-        let mut chunk: Chunk = Chunk::new(0);
+        let mut chunk: Chunk = Chunk::new(1);
 
         chunk.add_value(Value::Integer(90), 0);
         chunk.add_opcode(OpCode::Negate, 0);

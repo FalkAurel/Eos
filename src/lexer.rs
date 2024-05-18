@@ -80,7 +80,7 @@ impl <'a> Lexer <'a>{
                     b';' => return make_token(self, Semicolon),
                     b'"' => return self.parse_string(),
                     b'!' if self.match_pattern(b"!=") => return make_token(self, BangEqual),
-                    b'!' => {println!("Bang"); return make_token(self, Bang)},
+                    b'!' => return make_token(self, Bang),
                     b'=' if self.match_pattern(b"==") => return make_token(self, EqualEqual),
                     b'=' => return make_token(self, Equal),
                     b'>' if self.match_pattern(b">=") => return make_token(self, GreaterEqual),

@@ -12,9 +12,16 @@ mod vm;
 
 use common::ENABLE_TESTING;
 use test::run_tests;
+use value::Value;
 
 fn main(){
     if ENABLE_TESTING {
         run_tests();
+    }
+
+    if Value::Integer(6) == Value::Float(7.0) {
+        println!("It's true");
+    } else {
+        println!("Not true");
     }
 }

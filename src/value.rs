@@ -1,5 +1,6 @@
 use std::{fmt::{Debug, Display}, ops::{Add, Div, Mul, Sub}};
 use Value::*;
+use super::data_structures::DynType;
 
 type Error = String;
 
@@ -8,7 +9,7 @@ pub enum Value {
     Integer(i64),
     Float(f64),
     Boolean(bool),
-    ObjString(Box<String>),
+    Object(DynType),
     Null,
 }
 
@@ -26,6 +27,9 @@ impl Add for Value {
             (Integer(a), Float(b)) => Ok(Float(*a as f64 + b)),
             (Float(a), Integer(b)) => Ok(Float(a + *b as f64)),
             (Float(a), Float(b)) => Ok(Float(a + b)),
+            (Object(a), Object(b)) => {
+                (a.clone() + b.clone()).ok_or_else(|| format!("{:?} and {:?} can not be added", self, rhs)) // it's only 16 bytes (2 * 8 bytes)
+            },
             _ => Err(format!("{:?} and {:?} can not be added", self, rhs))
         }
     }
@@ -121,9 +125,7 @@ impl Display for Value {
             Float(value) => write!(f, "{}", value),
             Boolean(value) => write!(f, "{}", value),
             Null => write!(f, "Null"),
-            ObjString(value) => {
-                write!(f, "{}", value.as_ref())
-            }
+            Object(value) => write!(f, "{}", value)
         }
     }
 }

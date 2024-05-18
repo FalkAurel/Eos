@@ -146,7 +146,7 @@ pub fn print_chunk(chunk: &Chunk, name: &str){
                 index += INSTRUCTION_SIZE;
                 let value: &(Value, u32) = &chunk.read_value(index).unwrap();
                 match &value.0 {
-                    Value::ObjString(object) => println!(" | {}", object),
+                    Value::Object(object) => println!(" | {}", object),
                     _ => println!(" | {:?}", value.0)
                 }
                 index += VALUE_SIZE;

@@ -1,7 +1,5 @@
 use std::{fmt::Debug, ptr};
 
-pub const DEBUG_PRINT_CODE: bool = false;
-pub const DEBUG_TRACE_EXECUTION: bool = false;
 pub const DEFAULT_STACK_CAPACITY: usize = 1024;
 pub static ENABLE_TESTING: bool = true;
 

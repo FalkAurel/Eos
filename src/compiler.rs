@@ -237,7 +237,7 @@ impl Compiler {
 
 mod writing_to_chunk {
     use std::{ops::Range, str::FromStr};
-    use crate::token::Token;
+    use crate::{data_structures::DynType, token::Token};
 
     use super::{Chunk, OpCode, TokenType, Value};
 
@@ -257,7 +257,7 @@ mod writing_to_chunk {
             TokenType::True => Some(Value::Boolean(true)),
             TokenType::False => Some(Value::Boolean(false)),
             TokenType::Null => Some(Value::Null),
-            TokenType::Text => Some(Value::ObjString(Box::new(source[token.get_strrange()].to_string()))),
+            TokenType::Text => Some(Value::Object(DynType::new::<String>(source[token.get_strrange()].to_string()))),
             _ => None // prevents the chunk.add_value() from being executed
         }{
             chunk.add_value(value, token.line);
