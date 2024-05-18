@@ -257,7 +257,7 @@ mod writing_to_chunk {
             TokenType::True => Some(Value::Boolean(true)),
             TokenType::False => Some(Value::Boolean(false)),
             TokenType::Null => Some(Value::Null),
-            TokenType::Text => Some(Value::Obj(Box::new(source[token.get_strrange()].to_string()))),
+            TokenType::Text => Some(Value::ObjString(Box::new(source[token.get_strrange()].to_string()))),
             _ => None // prevents the chunk.add_value() from being executed
         }{
             chunk.add_value(value, token.line);

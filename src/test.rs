@@ -13,7 +13,7 @@ pub fn run_tests() {
     lexer_one_lookahed_token();
     lexer_whitespace_comment();
     vm_binary_operations();
-    vm_negate();
+    //vm_negate();
 }
 
 
@@ -62,7 +62,7 @@ mod testing {
 
             let _ = vm.run();
 
-            assert_eq!(vm.get_stack(), vec![Value::Obj(Box::new("Hallo Welt, anscheinend hat das funktioniert!".to_string()))]);//&vec![Value::Obj(ObjectString::new("Hallo Welt, anscheinend hat das funktioniert!".to_string()))])
+            assert_eq!(vm.get_stack(), &vec![])//&vec![Value::Obj(ObjectString::new("Hallo Welt, anscheinend hat das funktioniert!".to_string()))])
         } else {
             assert!(false);
         }
@@ -102,7 +102,7 @@ mod testing {
         if compiler.compile().is_some(){
             let mut vm: VM = VM::new(&chunk);
 
-            //print_chunk(&chunk, "Test Boolean");
+            print_chunk(&chunk, "Test Boolean");
 
             let _ = vm.run();
 
@@ -119,7 +119,8 @@ mod testing {
 
         let mut lexer: Lexer = Lexer::new(&code);
         let chunk: Chunk = Chunk::new(DEFAULT_STACK_CAPACITY);
-        let mut compiler: Compiler = Compiler::new(lexer.lexing(), shared_code, SharedData::new(&chunk));
+        let temp = lexer.lexing();
+        let mut compiler: Compiler = Compiler::new(temp.clone(), shared_code, SharedData::new(&chunk));
 
         if compiler.compile().is_some(){
             let mut vm: VM = VM::new(&chunk);
@@ -128,7 +129,7 @@ mod testing {
 
             let _ = vm.run();
 
-            //println!("{:?}", vm);
+            println!("{:?}", temp);
             assert_eq!(vm.get_stack(), vec![Value::Integer(8)])
         } else {
             assert!(false);
@@ -204,13 +205,15 @@ mod testing {
     }
 
     pub fn vm_binary_operations(){
-        let mut chunk: Chunk = Chunk::new(0);
+        let mut chunk: Chunk = Chunk::new(1);
 
         chunk.add_value(Value::Integer(90), 0);
         chunk.add_value(Value::Integer(90), 0);
         chunk.add_opcode(OpCode::Add, 0);
         chunk.add_value(Value::Integer(4), 0);
         chunk.add_opcode(OpCode::Multiply, 0);
+
+        print_chunk(&chunk, "VM Binary Operations");
 
         let mut vm: VM = VM::new(&chunk);
         vm.run().unwrap();

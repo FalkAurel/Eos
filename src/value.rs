@@ -8,7 +8,7 @@ pub enum Value {
     Integer(i64),
     Float(f64),
     Boolean(bool),
-    Obj(Box<String>),
+    ObjString(Box<String>),
     Null,
 }
 
@@ -121,7 +121,7 @@ impl Display for Value {
             Float(value) => write!(f, "{}", value),
             Boolean(value) => write!(f, "{}", value),
             Null => write!(f, "Null"),
-            Obj(value) => {
+            ObjString(value) => {
                 write!(f, "{}", value.as_ref())
             }
         }

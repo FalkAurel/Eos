@@ -60,7 +60,7 @@ impl Chunk {
     pub fn add_value(&mut self, value: Value, line: u32) {
         self.add_opcode(OpCode::Constant, line);
 
-        while self.size + VALUE_SIZE >= self.capacity {
+        while self.size + VALUE_SIZE > self.capacity {
             self.resize();
         }
 
@@ -72,7 +72,7 @@ impl Chunk {
     }
 
     pub fn read_opcode(&self, index: usize) -> Option<(OpCode, u32)> {
-        if index + INSTRUCTION_SIZE >= self.size {
+        if index + INSTRUCTION_SIZE > self.size {
             return None;
         }
 
@@ -146,7 +146,7 @@ pub fn print_chunk(chunk: &Chunk, name: &str){
                 index += INSTRUCTION_SIZE;
                 let value: &(Value, u32) = &chunk.read_value(index).unwrap();
                 match &value.0 {
-                    Value::Obj(object) => println!(" | {}", object),
+                    Value::ObjString(object) => println!(" | {}", object),
                     _ => println!(" | {:?}", value.0)
                 }
                 index += VALUE_SIZE;
