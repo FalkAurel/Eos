@@ -11,14 +11,13 @@ use writing_to_chunk::*;
 
 type ParseFn = fn(&mut Compiler);
 
-struct ParseRule
-{
+struct ParseRule {
     prefix: Option<ParseFn>,
     infix: Option<ParseFn>,
     precedence: Precedence
 }
 
-const fn rule(prefix: Option<ParseFn>, infix: Option<ParseFn>, precedence: Precedence) -> ParseRule{
+const fn rule(prefix: Option<ParseFn>, infix: Option<ParseFn>, precedence: Precedence) -> ParseRule {
     ParseRule{prefix, infix, precedence}
 }
 
@@ -82,11 +81,11 @@ pub struct Compiler{
 }
 
 impl Compiler {
-    pub fn new(tokens: Vec<Token>, source: SharedData<String>, chunk: SharedData<Chunk>) -> Self{
+    pub fn new(tokens: Vec<Token>, source: SharedData<String>, chunk: SharedData<Chunk>) -> Self {
         Self { tokens: tokens.into_iter(), source, chunk, previous: None, current: None, line: 0, had_error: false}
     }
 
-    pub fn compile(&mut self) -> Option<()>{
+    pub fn compile(&mut self) -> Option<()> {
         self.advance();
         self.expression();
         self.consume(TokenType::EndOfFile, "Expected end of expression.");
@@ -97,7 +96,7 @@ impl Compiler {
         Some(())
     }
 
-    fn parse_precedence(&mut self, precedence: Precedence){
+    fn parse_precedence(&mut self, precedence: Precedence) {
         self.advance();
         if let Some(previous_token) = &self.previous{
             if let Some(rule) = get_rule(previous_token.token_type) {
@@ -128,12 +127,12 @@ impl Compiler {
         self.parse_precedence(Precedence::ASSIGNMENT);
     }
 
-    fn grouping(&mut self){
+    fn grouping(&mut self) {
         self.expression();
         self.consume(TokenType::RightParent, "Expected )");
     }
 
-    fn string(&mut self){
+    fn string(&mut self) {
         if let Some(token) = &self.previous {
             write_value(self.chunk.as_mut(), token, self.source.as_ref());
         } else {
@@ -141,7 +140,7 @@ impl Compiler {
         }
     }
 
-    fn literal(&mut self){
+    fn literal(&mut self) {
         if let Some(token) = &self.previous {
             match token.token_type {
                 TokenType::False => write_value(self.chunk.as_mut(), token, self.source.as_ref()),
@@ -154,7 +153,7 @@ impl Compiler {
         }
     }
 
-    fn add_number(&mut self){
+    fn add_number(&mut self) {
         //Wrapper function to make write_value conform with PraseFn's signature.
         if let Some(token) = &self.previous{
             write_value(self.chunk.as_mut(), token, self.source.as_ref());
@@ -163,7 +162,7 @@ impl Compiler {
         }
     }
 
-    fn unary(&mut self){
+    fn unary(&mut self) {
         if let Some(token) = self.previous {
             let operator: TokenType = token.token_type;
 
@@ -178,7 +177,7 @@ impl Compiler {
         }
     }
 
-    fn binary(&mut self){
+    fn binary(&mut self) {
         if let Some(token) = self.previous {
             let operator: TokenType = token.token_type;
 
@@ -204,7 +203,7 @@ impl Compiler {
         }
     }
 
-    fn advance(&mut self){
+    fn advance(&mut self) {
         self.previous = self.current;
 
         while let Some(token) = &self.tokens.next() {
@@ -218,14 +217,14 @@ impl Compiler {
         }
     }
 
-    fn consume(&mut self, ttype: TokenType, error_msg: &str){
+    fn consume(&mut self, ttype: TokenType, error_msg: &str) {
         match &self.current {
             Some(token) if token.token_type == ttype => self.advance(),
             _ => self.error(error_msg)
         }
     }
 
-    fn error(&mut self, msg: &str){
+    fn error(&mut self, msg: &str) {
         if !self.had_error{
             let error: &str  = &self.source.as_ref()[self.previous.unwrap().get_range()];
             compile_error(&format!("At line {}: '{}' -> {}", self.line, error, msg));
@@ -250,21 +249,21 @@ mod writing_to_chunk {
         chunk.add_opcode(opcode2, line);
     }
 
-    pub fn write_value(chunk: &mut Chunk, token: &Token, source: &str){
+    pub fn write_value(chunk: &mut Chunk, token: &Token, source: &str) {
         if let Some(value) = match token.token_type {
             TokenType::Integer => Some(Value::Integer(extract_value(source, token.get_range()).unwrap())),
             TokenType::Float => Some(Value::Float(extract_value(source, token.get_range()).unwrap())),
             TokenType::True => Some(Value::Boolean(true)),
             TokenType::False => Some(Value::Boolean(false)),
             TokenType::Null => Some(Value::Null),
-            TokenType::Text => Some(Value::Object(DynType::new::<String>(source[token.get_strrange()].to_string()))),
+            TokenType::Text => Some(Value::Object(DynType::from::<String>(source[token.get_strrange()].to_string()))),
             _ => None // prevents the chunk.add_value() from being executed
         }{
             chunk.add_value(value, token.line);
         }
     }
 
-    fn extract_value<T: FromStr>(source: &str, range: Range<usize>) -> Option<T>{
+    fn extract_value<T: FromStr>(source: &str, range: Range<usize>) -> Option<T> {
         source.get(range)?.parse::<T>().ok()
     }
 }

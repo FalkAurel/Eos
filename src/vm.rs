@@ -16,7 +16,7 @@ impl <'a> VM <'a>{
         Self { chunk, stack: Vec::with_capacity(DEFAULT_STACK_CAPACITY), line: 0, ptr: 0 }
     }
 
-    pub fn run(&mut self) -> Option<()>{
+    pub fn run(&mut self) -> Option<()> {
         while let Some(buffer) = self.chunk.read_opcode(self.ptr) {
             self.line = buffer.1;
 

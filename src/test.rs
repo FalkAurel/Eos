@@ -23,7 +23,7 @@ mod testing {
     use crate::data_structures::DynType;
     use crate::token::Token;
     use crate::{lexer::Lexer, token::TokenType};
-    use crate::{vm::VM, chunk::{Chunk, print_chunk}, opcode::OpCode, value::Value, compiler::Compiler, common::{DEFAULT_STACK_CAPACITY, SharedData}};
+    use crate::{vm::VM, chunk::Chunk, opcode::OpCode, value::Value, compiler::Compiler, common::{DEFAULT_STACK_CAPACITY, SharedData}};
 
 
     pub fn runtime_error(){
@@ -77,7 +77,7 @@ mod testing {
 
             let _ = vm.run();
 
-            assert_eq!(vm.get_stack(), &vec![Value::Object(DynType::new("String".to_string()))])
+            assert_eq!(vm.get_stack(), &vec![Value::Object(DynType::from("String".to_string()))])
         } else {
             assert!(false);
         }

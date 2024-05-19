@@ -1,5 +1,6 @@
 use std::{fmt::Debug, ptr};
 
+pub static DEBUG_BYTECODE: bool = false;
 pub const DEFAULT_STACK_CAPACITY: usize = 1024;
 pub static ENABLE_TESTING: bool = true;
 

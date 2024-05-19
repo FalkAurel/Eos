@@ -28,7 +28,10 @@ impl Add for Value {
             (Float(a), Integer(b)) => Ok(Float(a + *b as f64)),
             (Float(a), Float(b)) => Ok(Float(a + b)),
             (Object(a), Object(b)) => {
-                (a.clone() + b.clone()).ok_or_else(|| format!("{:?} and {:?} can not be added", self, rhs)) // it's only 16 bytes (2 * 8 bytes)
+                if let Some(temp) = a.add(b) {
+                    return Ok(Object(temp));
+                }
+                Err(format!("{:?} and {:?} can not be added", self, rhs))
             },
             _ => Err(format!("{:?} and {:?} can not be added", self, rhs))
         }
@@ -101,7 +104,7 @@ impl Comparison for Value {
             (Integer(a), Float(b)) => Ok(Boolean((*a as f64) < *b)),
             (Float(a), Integer(b)) => Ok(Boolean(*a < *b as f64)),
             (Float(a), Float(b)) => Ok(Boolean(a > b)),
-            _ => Err(" > is only available for Float and Integer".to_string())
+            _ => Err(" < is only available for Float and Integer".to_string())
         }
     }
 }

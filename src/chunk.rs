@@ -11,22 +11,24 @@ const LINE_SIZE: usize = size_of::<u32>();
 pub const INSTRUCTION_SIZE: usize = OPCODE_SIZE + LINE_SIZE;
 
 
-// MEMORY LAYOUT
-//
-// All the opcodes, lines and values are stored in a one long arraylist.
-// When we store a Value we indicate this by storing OpCode::Constant first. Which is followed by the line.
-//
-//  CONSTANT LINE VALUE
-//
-// VALUE will read the line information stored before it, as to not create redundant information.
-//
-// Normally when storing OpCode we just store the Opcode followed by its line.
-//
-//  OPCODE LINE
-//
-// In practice the memory layout could look something like this
-//
-//  OPCODE LINE OPCODE LINE CONSTANT LINE VALUE OPCODE CONSTANT LINE VALUE
+/* MEMORY LAYOUT
+
+ All the opcodes, lines and values are stored in a one long arraylist.
+ When we store a Value we indicate this by storing OpCode::Constant first. Which is followed by the line.
+
+  CONSTANT LINE VALUE
+
+ VALUE will read the line information stored before it, as to not create redundant information.
+
+ Normally when storing OpCode we just store the Opcode followed by its line.
+
+  OPCODE LINE
+
+ In practice the memory layout could look something like this
+
+  OPCODE LINE OPCODE LINE CONSTANT LINE VALUE OPCODE CONSTANT LINE VALUE
+
+  */
 
 
 #[derive(Debug)]
