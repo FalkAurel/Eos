@@ -13,9 +13,10 @@ mod vm;
 
 use common::{DEBUG_BYTECODE, ENABLE_TESTING};
 use test::run_tests;
-
+use data_structures::initialize_interned_string;
 
 fn main(){
+    initialize_interned_string();
     if ENABLE_TESTING {
         run_tests();
     }
