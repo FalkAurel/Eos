@@ -77,7 +77,7 @@ mod testing {
 
             let _ = vm.run();
 
-            assert_eq!(vm.get_stack(), &vec![Value::Object(DynType::from("String".to_string()))])
+            assert_eq!(vm.get_stack(), &vec![Value::Object(DynType::from::<String>("String".to_string()))])
         } else {
             assert!(false);
         }

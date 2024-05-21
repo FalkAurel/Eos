@@ -10,9 +10,10 @@ mod token;
 mod value;
 mod vm;
 
-use chunk::print_chunk;
+
 use common::{DEBUG_BYTECODE, ENABLE_TESTING};
 use test::run_tests;
+
 
 fn main(){
     if ENABLE_TESTING {

@@ -2,7 +2,7 @@ use std::{fmt::{Debug, Display}, ops::{Add, Div, Mul, Sub}};
 use Value::*;
 use super::data_structures::DynType;
 
-type Error = String;
+pub type Error = String;
 
 #[derive(Debug, PartialEq)]
 pub enum Value {
@@ -27,12 +27,7 @@ impl Add for Value {
             (Integer(a), Float(b)) => Ok(Float(*a as f64 + b)),
             (Float(a), Integer(b)) => Ok(Float(a + *b as f64)),
             (Float(a), Float(b)) => Ok(Float(a + b)),
-            (Object(a), Object(b)) => {
-                if let Some(temp) = a.add(b) {
-                    return Ok(Object(temp));
-                }
-                Err(format!("{:?} and {:?} can not be added", self, rhs))
-            },
+            (Object(a), Object(b)) => Ok(Object(a.add(b)?)),
             _ => Err(format!("{:?} and {:?} can not be added", self, rhs))
         }
     }

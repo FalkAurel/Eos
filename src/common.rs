@@ -1,4 +1,4 @@
-use std::{fmt::Debug, ptr};
+use std::ptr;
 
 pub static DEBUG_BYTECODE: bool = false;
 pub const DEFAULT_STACK_CAPACITY: usize = 1024;
@@ -9,8 +9,8 @@ pub fn compile_error(msg: &str){
     eprintln!("[COMPILE ERROR] {msg}")
 }
 
-pub fn runtime_error<T: Debug>(msg: T){
-    eprintln!("[RUNTIME ERROR]: {msg:?}")
+pub fn runtime_error(msg: &str){
+    eprintln!("[RUNTIME ERROR] {msg}")
 }
 
 
